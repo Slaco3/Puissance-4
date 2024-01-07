@@ -20,7 +20,7 @@ def afficher_titre_jeu():
  |  ___/| |  | | | |  \___ \\\\___ \ / /\ \ | . ` | |    |  __|   |__   _|
  | |    | |__| |_| |_ ____) |___) / ____ \| |\  | |____| |____     | |  
  |_|     \____/|_____|_____/_____/_/    \_\_| \_|\_____|______|    |_|  
-\n''' ) 
+\n\n''' ) 
 
 
 def intialiser_grille():
@@ -32,15 +32,15 @@ def intialiser_grille():
 
 
 def afficher_grille():
-    print("                       1   2   3   4   5   6   7")
+    print("                      1   2   3   4   5   6   7")
     for indice, ligne in enumerate(GRILLE):
-        print("                     +---+---+---+---+---+---+---+")
+        print("                    +---+---+---+---+---+---+---+")
         print(f"                   {indice + 1} ", end='')
         for element in ligne:
             print(f"| {element} ", end='')
         print(f"| {indice + 1}\n", end='')
-    print("                     +---+---+---+---+---+---+---+")
-    print("                       1   2   3   4   5   6   7\n")
+    print("                    +---+---+---+---+---+---+---+")
+    print("                      1   2   3   4   5   6   7\n\n")
 
 
 def colonne_est_pleine(colonne):
@@ -53,7 +53,7 @@ def colonne_est_pleine(colonne):
 def demander_choix_colonne_utilisateur():
     choix_colonne_utilisateur = 0
     while choix_colonne_utilisateur not in (range(1, 8)):
-        choix_colonne_utilisateur = input("Rentrez le numéro de la colonne dans la quelle vous souhaitez jouer : ")
+        choix_colonne_utilisateur = input("Rentrez le numéro de la colonne dans laquelle vous souhaitez jouer : ")
         try :
             choix_colonne_utilisateur = int(choix_colonne_utilisateur)
             if choix_colonne_utilisateur not in range(1, 8):
@@ -214,16 +214,33 @@ def recuperer_choix_colonne_ordinateur():
     return meilleure_colonne
 
 
+def premier_tour():
+    afficher_titre_jeu()
+    afficher_grille()
+
+    choix_colonne_utilisateur = demander_choix_colonne_utilisateur()
+    jouer_coup(choix_colonne_utilisateur, JETON_JOUEUR)
+
+    if choix_colonne_utilisateur in ((1, 2, 3, 5, 6, 7)):
+        choix_colonne_ordinateur = 4
+    else:
+        choix_colonne_ordinateur = random.choice((3, 5))
+
+    jouer_coup(choix_colonne_ordinateur, JETON_ORDI)
+
 
 
 # ------------------------ JEU ------------------------ #
 
+
+
 intialiser_grille()
+premier_tour()
+os.system("clear")
 
 while True:
     afficher_titre_jeu()
     afficher_grille()
-
 
     choix_colonne_utilisateur = demander_choix_colonne_utilisateur()
     postion_jeton_joueur = jouer_coup(choix_colonne_utilisateur, JETON_JOUEUR)
