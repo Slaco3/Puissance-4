@@ -108,7 +108,7 @@ def recuperer_liste_colonnes_jouables():
 
 
 def nb_jeton_direction(position_jeton, deplacement_horizontal, deplacement_vertical, jeton):
-    compteur = 1
+    nb_jeton_direction = 1
 
     indice_ligne = position_jeton[1] - 1
     indice_colonne = position_jeton[0] - 1
@@ -116,12 +116,38 @@ def nb_jeton_direction(position_jeton, deplacement_horizontal, deplacement_verti
     while case_est_dans_grille(indice_colonne + deplacement_horizontal, indice_ligne + deplacement_vertical) and GRILLE[indice_ligne + deplacement_vertical][indice_colonne + deplacement_horizontal] == jeton: 
         indice_ligne += deplacement_vertical
         indice_colonne += deplacement_horizontal
-        compteur +=1
+        nb_jeton_direction +=1
             
-    return compteur
+    return nb_jeton_direction
 
 
-def axe_jetons_alignes(position_jeton, jeton, nombre_jetons_alignes_a_evaluer):
+def nb_jetons_et_cases_vide_direction(position_jeton, deplacement_horizontal, deplacement_vertical, jeton):
+    nb_jeton_et_cases_vide_direction = 1
+    cases_valides = (jeton, ' ')
+    indice_ligne = position_jeton[1] - 1
+    indice_colonne = position_jeton[0] - 1
+
+    while case_est_dans_grille(indice_colonne + deplacement_horizontal, indice_ligne + deplacement_vertical) and GRILLE[indice_ligne + deplacement_vertical][indice_colonne + deplacement_horizontal] in cases_valides: 
+        indice_ligne += deplacement_vertical
+        indice_colonne += deplacement_horizontal
+        nb_jeton_et_cases_vide_direction +=1
+            
+    return nb_jeton_et_cases_vide_direction
+
+
+def place_suffisante_pour_alignement_victoire(deplacements_axe, jeton, postion_jeton):
+    deplacement_horizontal1 = deplacements_axe[0][0]
+    deplacement_vertical1 = deplacements_axe[0][1]
+    deplacement_horizontal2 = deplacements_axe[1][0]
+    deplacement_vertical2 = deplacements_axe[1][1]
+
+    nombre_cases_vides_ou_avec_bon_jeton = (nb_jetons_et_cases_vide_direction(postion_jeton, deplacement_horizontal1,deplacement_vertical1, jeton) + nb_jetons_et_cases_vide_direction(postion_jeton, deplacement_horizontal2,deplacement_vertical2, jeton)) - 1
+    if nombre_cases_vides_ou_avec_bon_jeton >= NOMBRE_JETONS_POUR_VICTOIRE:
+        return True
+    return False
+
+
+def position_jeton_donne_bon_nombre_jetons_alignes(position_jeton, jeton, nombre_jetons_alignes_a_evaluer):
     deplacements_axe_NE_SO = ((1,1),(-1,-1))
     deplacements_axe_NO_SE = ((1,-1), (-1,1))
     deplacements_axe_E_O = ((1,0), (-1,0))
@@ -132,46 +158,17 @@ def axe_jetons_alignes(position_jeton, jeton, nombre_jetons_alignes_a_evaluer):
     nb_jetons_axe_E_O = (nb_jeton_direction(position_jeton,1,0,jeton) + nb_jeton_direction(position_jeton,-1,0,jeton))-1
     nb_jetons_axe_N_S = (nb_jeton_direction(position_jeton,0,1,jeton) + nb_jeton_direction(position_jeton,0,-1,jeton))-1
 
-    nb_jeton_max = max(nb_jetons_axe_NE_SO, nb_jetons_axe_NO_SE, nb_jetons_axe_E_O, nb_jetons_axe_N_S)
 
-    if nb_jeton_max >= nombre_jetons_alignes_a_evaluer:
-        if nb_jeton_max == nb_jetons_axe_NE_SO:
-            return deplacements_axe_NE_SO
-        elif nb_jeton_max == nb_jetons_axe_NO_SE:
-            return deplacements_axe_NO_SE
-        elif nb_jeton_max == nb_jetons_axe_E_O:
-            return deplacements_axe_E_O
-        elif nb_jeton_max == nb_jetons_axe_N_S:
-            return deplacements_axe_N_S
-    else:
-        return None
-    
-
-def nb_jeton_et_cases_vide_direction(position_jeton, deplacement_horizontal, deplacement_vertical, jeton):
-    compteur = 1
-    cases_valides = (jeton, ' ')
-    indice_ligne = position_jeton[1] - 1
-    indice_colonne = position_jeton[0] - 1
-
-    while case_est_dans_grille(indice_colonne + deplacement_horizontal, indice_ligne + deplacement_vertical) and GRILLE[indice_ligne + deplacement_vertical][indice_colonne + deplacement_horizontal] in cases_valides: 
-        indice_ligne += deplacement_vertical
-        indice_colonne += deplacement_horizontal
-        compteur +=1
-            
-    return compteur
-
-
-def place_suffisante_pour_alignement_victoire(deplacements_axe, jeton, postion_jeton):
-    deplacement_horizontal1 = deplacements_axe[0][0]
-    deplacement_vertical1 = deplacements_axe[0][1]
-    deplacement_horizontal2 = deplacements_axe[1][0]
-    deplacement_vertical2 = deplacements_axe[1][1]
-
-    nombre_cases_vides_ou_avec_jeton = (nb_jeton_et_cases_vide_direction(postion_jeton, deplacement_horizontal1,deplacement_vertical1, jeton) + nb_jeton_et_cases_vide_direction(postion_jeton, deplacement_horizontal2,deplacement_vertical2, jeton)) - 1
-    if nombre_cases_vides_ou_avec_jeton >= NOMBRE_JETONS_POUR_VICTOIRE:
+    if nb_jetons_axe_NE_SO >= nombre_jetons_alignes_a_evaluer and place_suffisante_pour_alignement_victoire(deplacements_axe_NE_SO, jeton, position_jeton):
+        return True
+    elif nb_jetons_axe_NO_SE >= nombre_jetons_alignes_a_evaluer and place_suffisante_pour_alignement_victoire(deplacements_axe_NO_SE, jeton, position_jeton):
+        return True
+    elif nb_jetons_axe_E_O >= nombre_jetons_alignes_a_evaluer and place_suffisante_pour_alignement_victoire(deplacements_axe_E_O, jeton, position_jeton):
+        return True
+    elif nb_jetons_axe_N_S >= nombre_jetons_alignes_a_evaluer and place_suffisante_pour_alignement_victoire(deplacements_axe_N_S, jeton, position_jeton):
         return True
     return False
-
+    
 
 def recuperer_choix_colonne_ordinateur():
     colonne_victoire_ou_contre = 0
@@ -185,21 +182,18 @@ def recuperer_choix_colonne_ordinateur():
 
         position_jeton_potentiel = recuprer_position_jeton_potentielle(colonne)
 
-        if axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
+        if position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_potentiel, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
             colonne_victoire_ou_contre = colonne
             break
-        elif axe_jetons_alignes(position_jeton_potentiel, JETON_JOUEUR, NOMBRE_JETONS_POUR_VICTOIRE):
+
+        elif position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_potentiel, JETON_JOUEUR, NOMBRE_JETONS_POUR_VICTOIRE):
             colonne_victoire_ou_contre = colonne
 
-        elif axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 3):
-            deplacement_axe = axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 3)
-            if place_suffisante_pour_alignement_victoire(deplacement_axe, JETON_ORDI, position_jeton_potentiel):
-                colonnes_donnant_3_jetons_alignes.append(colonne)
+        elif position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 3):
+            colonnes_donnant_3_jetons_alignes.append(colonne)
 
-        elif axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 2):
-            deplacement_axe = axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 2)
-            if place_suffisante_pour_alignement_victoire(deplacement_axe, JETON_ORDI, position_jeton_potentiel):
-                colonnes_donnant_2_jetons_alignes.append(colonne)
+        elif position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 2):
+            colonnes_donnant_2_jetons_alignes.append(colonne)
 
     print("colonnes 3 jetons potentiels alignés", colonnes_donnant_3_jetons_alignes)
     print("colonnes 2 jetons potentiels alignés", colonnes_donnant_2_jetons_alignes)
@@ -219,19 +213,22 @@ def recuperer_choix_colonne_ordinateur():
 
     return meilleure_colonne
 
+
+
+
 # ------------------------ JEU ------------------------ #
-
-
 
 intialiser_grille()
 
 while True:
     afficher_titre_jeu()
     afficher_grille()
+
+
     choix_colonne_utilisateur = demander_choix_colonne_utilisateur()
     postion_jeton_joueur = jouer_coup(choix_colonne_utilisateur, JETON_JOUEUR)
 
-    if axe_jetons_alignes(postion_jeton_joueur, JETON_JOUEUR, NOMBRE_JETONS_POUR_VICTOIRE):
+    if position_jeton_donne_bon_nombre_jetons_alignes(postion_jeton_joueur, JETON_JOUEUR, NOMBRE_JETONS_POUR_VICTOIRE):
         os.system("clear")
         afficher_titre_jeu()
         afficher_grille()
@@ -242,10 +239,12 @@ while True:
         print("EGALITE !")
         break
     
+
     choix_colonne_ordinateur = recuperer_choix_colonne_ordinateur()
     position_jeton_ordinateur = jouer_coup(choix_colonne_ordinateur, JETON_ORDI)
     print("position dernier jeton ordi (x,y): ", position_jeton_ordinateur)
-    if axe_jetons_alignes(position_jeton_ordinateur, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
+
+    if position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_ordinateur, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
         os.system("clear")
         afficher_titre_jeu()
         afficher_grille()
@@ -255,5 +254,6 @@ while True:
     if grille_est_pleine():
         print("EGALITE !")
         break
+
 
     os.system("clear")
