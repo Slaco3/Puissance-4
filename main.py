@@ -195,21 +195,21 @@ def recuperer_choix_colonne_ordinateur():
         elif position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 2):
             colonnes_donnant_2_jetons_alignes.append(colonne)
 
-    print("colonnes 3 jetons potentiels alignés", colonnes_donnant_3_jetons_alignes)
-    print("colonnes 2 jetons potentiels alignés", colonnes_donnant_2_jetons_alignes)
+    # print("colonnes 3 jetons potentiels alignés", colonnes_donnant_3_jetons_alignes)
+    # print("colonnes 2 jetons potentiels alignés", colonnes_donnant_2_jetons_alignes)
 
     if colonne_victoire_ou_contre:
         meilleure_colonne = colonne_victoire_ou_contre
-        print("Contre ou victoire")
+        # print("Contre ou victoire")
     elif colonnes_donnant_3_jetons_alignes:
         meilleure_colonne = random.choice(colonnes_donnant_3_jetons_alignes)
-        print("choix 3 jetons")
+        # print("choix 3 jetons")
     elif colonnes_donnant_2_jetons_alignes:
         meilleure_colonne = random.choice(colonnes_donnant_2_jetons_alignes)
-        print("choix 2 jetons")
+        # print("choix 2 jetons")
     else:
         meilleure_colonne = random.choice(recuperer_liste_colonnes_jouables())
-        print("choix random")
+        # print("choix random")
 
     return meilleure_colonne
 
@@ -259,7 +259,7 @@ while True:
 
     choix_colonne_ordinateur = recuperer_choix_colonne_ordinateur()
     position_jeton_ordinateur = jouer_coup(choix_colonne_ordinateur, JETON_ORDI)
-    print("position dernier jeton ordi (x,y): ", position_jeton_ordinateur)
+    # print("position dernier jeton ordi (x,y): ", position_jeton_ordinateur)
 
     if position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_ordinateur, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
         os.system("clear")
