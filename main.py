@@ -35,12 +35,12 @@ def afficher_grille():
     print("                      1   2   3   4   5   6   7")
     for indice, ligne in enumerate(GRILLE):
         print("                    +---+---+---+---+---+---+---+")
-        print(f"                   {indice + 1} ", end='')
+        print(f"                  {indice + 1} ", end='')
         for element in ligne:
             print(f"| {element} ", end='')
         print(f"| {indice + 1}\n", end='')
     print("                    +---+---+---+---+---+---+---+")
-    print("                      1   2   3   4   5   6   7\n\n")
+    print("                   &   1   2   3   4   5   6   7\n\n")
 
 
 def colonne_est_pleine(colonne):
