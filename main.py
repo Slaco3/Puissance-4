@@ -1,5 +1,6 @@
 import random
 from colorama import Fore, Style
+import os
 
 NOMBRE_JETONS_POUR_VICTOIRE = 4
 
@@ -19,7 +20,7 @@ def afficher_titre_jeu():
  |  ___/| |  | | | |  \___ \\\\___ \ / /\ \ | . ` | |    |  __|   |__   _|
  | |    | |__| |_| |_ ____) |___) / ____ \| |\  | |____| |____     | |  
  |_|     \____/|_____|_____/_____/_/    \_\_| \_|\_____|______|    |_|  
-''' ) 
+\n''' ) 
 
 
 def intialiser_grille():
@@ -31,15 +32,15 @@ def intialiser_grille():
 
 
 def afficher_grille():
-    print("     1   2   3   4   5   6   7")
+    print("                       1   2   3   4   5   6   7")
     for indice, ligne in enumerate(GRILLE):
-        print("   +---+---+---+---+---+---+---+")
-        print(f" {indice + 1} ", end='')
+        print("                     +---+---+---+---+---+---+---+")
+        print(f"                   {indice + 1} ", end='')
         for element in ligne:
             print(f"| {element} ", end='')
         print(f"| {indice + 1}\n", end='')
-    print("   +---+---+---+---+---+---+---+")
-    print("     1   2   3   4   5   6   7")
+    print("                     +---+---+---+---+---+---+---+")
+    print("                       1   2   3   4   5   6   7\n")
 
 
 def colonne_est_pleine(colonne):
@@ -52,7 +53,7 @@ def colonne_est_pleine(colonne):
 def demander_choix_colonne_utilisateur():
     choix_colonne_utilisateur = 0
     while choix_colonne_utilisateur not in (range(1, 8)):
-        choix_colonne_utilisateur = input("Rentrez le numéro de la colonne dans la quelle vous souhaitez jouer :")
+        choix_colonne_utilisateur = input("Rentrez le numéro de la colonne dans la quelle vous souhaitez jouer : ")
         try :
             choix_colonne_utilisateur = int(choix_colonne_utilisateur)
             if choix_colonne_utilisateur not in range(1, 8):
@@ -178,10 +179,12 @@ def recuperer_choix_colonne_ordinateur():
     colonnes_donnant_2_jetons_alignes = []
     
     for i in range(NB_COLONNES):
-        colonne = i+1
+        colonne = i + 1
         if colonne_est_pleine(colonne):
             continue
+
         position_jeton_potentiel = recuprer_position_jeton_potentielle(colonne)
+
         if axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
             colonne_victoire_ou_contre = colonne
             break
@@ -197,6 +200,9 @@ def recuperer_choix_colonne_ordinateur():
             deplacement_axe = axe_jetons_alignes(position_jeton_potentiel, JETON_ORDI, 2)
             if place_suffisante_pour_alignement_victoire(deplacement_axe, JETON_ORDI, position_jeton_potentiel):
                 colonnes_donnant_2_jetons_alignes.append(colonne)
+
+    print("colonnes 3 jetons potentiels alignés", colonnes_donnant_3_jetons_alignes)
+    print("colonnes 2 jetons potentiels alignés", colonnes_donnant_2_jetons_alignes)
 
     if colonne_victoire_ou_contre:
         meilleure_colonne = colonne_victoire_ou_contre
@@ -216,15 +222,18 @@ def recuperer_choix_colonne_ordinateur():
 # ------------------------ JEU ------------------------ #
 
 
-afficher_titre_jeu()
+
 intialiser_grille()
 
 while True:
+    afficher_titre_jeu()
     afficher_grille()
     choix_colonne_utilisateur = demander_choix_colonne_utilisateur()
     postion_jeton_joueur = jouer_coup(choix_colonne_utilisateur, JETON_JOUEUR)
 
     if axe_jetons_alignes(postion_jeton_joueur, JETON_JOUEUR, NOMBRE_JETONS_POUR_VICTOIRE):
+        os.system("clear")
+        afficher_titre_jeu()
         afficher_grille()
         print("VICTOIRE ! ")
         break
@@ -235,8 +244,10 @@ while True:
     
     choix_colonne_ordinateur = recuperer_choix_colonne_ordinateur()
     position_jeton_ordinateur = jouer_coup(choix_colonne_ordinateur, JETON_ORDI)
-
+    print("position dernier jeton ordi (x,y): ", position_jeton_ordinateur)
     if axe_jetons_alignes(position_jeton_ordinateur, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
+        os.system("clear")
+        afficher_titre_jeu()
         afficher_grille()
         print("DEFAITE ! ")
         break
@@ -244,3 +255,5 @@ while True:
     if grille_est_pleine():
         print("EGALITE !")
         break
+
+    os.system("clear")
