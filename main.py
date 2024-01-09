@@ -1,6 +1,7 @@
 import random
 from colorama import Fore, Style
 import os
+import platform
 
 NOMBRE_JETONS_POUR_VICTOIRE = 4
 
@@ -229,6 +230,16 @@ def premier_tour():
     jouer_coup(choix_colonne_ordinateur, JETON_ORDI)
 
 
+def effacer_ecran():
+    systeme_exploitation = platform.system().lower()
+    if systeme_exploitation == "linux" or systeme_exploitation == "darwin":
+        os.system("clear")
+
+    elif systeme_exploitation == "windows":
+        os.system("cls")
+
+    else:
+        pass
 
 # ------------------------ JEU ------------------------ #
 
@@ -236,7 +247,7 @@ def premier_tour():
 
 intialiser_grille()
 premier_tour()
-os.system("clear")
+effacer_ecran()
 
 while True:
     afficher_titre_jeu()
@@ -246,7 +257,7 @@ while True:
     postion_jeton_joueur = jouer_coup(choix_colonne_utilisateur, JETON_JOUEUR)
 
     if position_jeton_donne_bon_nombre_jetons_alignes(postion_jeton_joueur, JETON_JOUEUR, NOMBRE_JETONS_POUR_VICTOIRE):
-        os.system("clear")
+        effacer_ecran()
         afficher_titre_jeu()
         afficher_grille()
         print("VICTOIRE ! ")
@@ -262,7 +273,7 @@ while True:
     # print("position dernier jeton ordi (x,y): ", position_jeton_ordinateur)
 
     if position_jeton_donne_bon_nombre_jetons_alignes(position_jeton_ordinateur, JETON_ORDI, NOMBRE_JETONS_POUR_VICTOIRE):
-        os.system("clear")
+        effacer_ecran()
         afficher_titre_jeu()
         afficher_grille()
         print("DEFAITE ! ")
@@ -273,4 +284,4 @@ while True:
         break
 
 
-    os.system("clear")
+    effacer_ecran()
